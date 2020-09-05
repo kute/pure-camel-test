@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<camelContext id="cdi-camel-xml" errorHandlerRef="error-handler"
+              xmlns="http://camel.apache.org/schema/spring"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://camel.apache.org/schema/spring
+              http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <propertyPlaceholder location="classpath:META-INF/spring/config.properties"/>
+
+    <!-- load all RouteBuilder class into camel for the package or sub-package -->
+    <packageScan>
+        <package>com.kute.camel</package>
+        <excludes>**.*</excludes>
+        <includes>**.*Test*</includes>
+    </packageScan>
+
+
+    <endpoint id="fromFile" uri="file:data/inbox?noop=true" />
+
+    <endpoint id="toFile" uri="file:data/outbox" />
+
+    <route id="fileRoute">
+        <from uri="ref:fromFile" />
+        <to uri="ref:toFile" />
+    </route>
+
+</camelContext>
