@@ -1,0 +1,5 @@
+# 具体的类
+com.kute.camel.myself.typeconverter.NothingConverter
+
+#  声明目录，加载 带有 @Converter的类以及方法：AnnotationTypeConverterLoader
+com.kute.camel.myself.typeconverter.annotationconverter

@@ -8,6 +8,9 @@ class PureCamelTestApplicationTests {
 
 	@Test
 	void contextLoads() {
+
+
+
 	}
 
 }

@@ -1,46 +1,23 @@
 package com.kute.camel.myself.typeconverter;
 
-import org.apache.camel.Exchange;
-import org.apache.camel.NoTypeConversionAvailableException;
-import org.apache.camel.TypeConversionException;
-import org.apache.camel.TypeConverter;
+import org.apache.camel.*;
+import org.apache.camel.support.TypeConverterSupport;
 
 /**
  * created by kute at 2020/8/2 11:04 上午
  */
-public class NothingConverter implements TypeConverter {
-	@Override
-	public boolean allowNull() {
-		return false;
-	}
+public class NothingConverter extends TypeConverterSupport {
 
-	@Override
-	public <T> T convertTo(Class<T> type, Object value) throws TypeConversionException {
-		return null;
-	}
+    @Override
+    public <T> T convertTo(Class<T> type, Exchange exchange, Object value) throws TypeConversionException {
+        if (!NothingType.class.isAssignableFrom(type)) {
+            return (T) MISS_VALUE;
+        }
 
-	@Override
-	public <T> T convertTo(Class<T> type, Exchange exchange, Object value) throws TypeConversionException {
-		return null;
-	}
+        // reuse converter before
+        TypeConverter typeConverter = exchange.getContext().getTypeConverter();
+        String newValue = typeConverter.convertTo(String.class, value);
 
-	@Override
-	public <T> T mandatoryConvertTo(Class<T> type, Object value) throws TypeConversionException, NoTypeConversionAvailableException {
-		return null;
-	}
-
-	@Override
-	public <T> T mandatoryConvertTo(Class<T> type, Exchange exchange, Object value) throws TypeConversionException, NoTypeConversionAvailableException {
-		return null;
-	}
-
-	@Override
-	public <T> T tryConvertTo(Class<T> type, Object value) {
-		return null;
-	}
-
-	@Override
-	public <T> T tryConvertTo(Class<T> type, Exchange exchange, Object value) {
-		return null;
-	}
+        return (T) NothingType.builder().value(newValue).build();
+    }
 }
