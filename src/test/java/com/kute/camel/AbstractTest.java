@@ -3,6 +3,7 @@ package com.kute.camel;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.support.SimpleRegistry;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,13 +13,16 @@ import java.util.concurrent.TimeUnit;
 public class AbstractTest {
 
     protected static void superTest(RouteBuilder routeBuilder, int sleep) {
+        CamelContext context = new DefaultCamelContext();
+        superTest(routeBuilder, context);
+    }
 
+    protected static void superTest(RouteBuilder routeBuilder, CamelContext context) {
         try {
-            CamelContext camelContext = new DefaultCamelContext();
-            camelContext.addRoutes(routeBuilder);
-            camelContext.start();
-            TimeUnit.SECONDS.sleep(sleep);
-            camelContext.stop();
+            context.addRoutes(routeBuilder);
+            context.start();
+            TimeUnit.SECONDS.sleep(5);
+            context.stop();
         } catch (Exception e) {
 
         }

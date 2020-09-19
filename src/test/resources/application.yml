@@ -3,15 +3,20 @@ spring:
     name: pure-camel-test
 
 
+
+
 # camel spring redis
-common:
-  redis:
-    host: 192.168.31.169
-    port: 6379
-    password:
+#common:
+#  redis:
+#    host: 192.168.31.169
+#    port: 6379
+#    password:
 
 camel:
   component:
     spring-redis:
       bridge-error-handler: true
       enabled: true
+#  camel springboot config
+  springboot:
+    name: camel-context-name

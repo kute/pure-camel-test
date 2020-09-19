@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.assertj.core.util.Maps;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class RedisCommonConfiguration {
 
     @Bean
+    @ConditionalOnProperty(prefix = "common.redis", value = "host")
     @ConfigurationProperties(prefix = "common.redis")
     public RedisLettuceProperties redisLettuceProperties() {
         return new RedisLettuceProperties();

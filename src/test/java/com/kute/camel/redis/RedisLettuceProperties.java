@@ -16,6 +16,6 @@ public class RedisLettuceProperties implements Serializable {
     private String host;
     private Integer port;
     private String password;
-    private Long timeout;
+    private Long timeout = 3000L;
     private GenericObjectPoolConfig poolConfig;
 }
