@@ -1,6 +1,8 @@
 spring:
   application:
     name: pure-camel-test
+server:
+  port: 8080
 
 
 

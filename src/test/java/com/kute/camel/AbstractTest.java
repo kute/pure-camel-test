@@ -18,6 +18,8 @@ public class AbstractTest {
     }
 
     protected static void superTest(RouteBuilder routeBuilder, CamelContext context) {
+        // 日志脱敏
+        context.setLogMask(true);
         try {
             context.addRoutes(routeBuilder);
             context.start();
@@ -25,6 +27,8 @@ public class AbstractTest {
             context.stop();
         } catch (Exception e) {
 
+        } finally {
+            context.stop();
         }
     }
 

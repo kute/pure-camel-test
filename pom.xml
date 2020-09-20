@@ -21,7 +21,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -101,9 +105,16 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jsonpath</artifactId>
+            <version>3.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-kafka</artifactId>
             <version>3.5.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -125,6 +136,13 @@
             <artifactId>metadata-extractor</artifactId>
             <version>2.14.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.11</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -138,20 +156,21 @@
             https://camel.apache.org/manual/latest/camel-maven-plugin.html
             https://camel.apache.org/manual/latest/camel-run-maven-goal.html
              -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.camel</groupId>-->
-<!--                <artifactId>camel-maven-plugin</artifactId>-->
-<!--                <version>3.4.2</version>-->
-<!--                <configuration>-->
-<!--&lt;!&ndash;                    default mainClass&ndash;&gt;-->
-<!--&lt;!&ndash;                    <mainClass>org.apache.camel.spring.Main</mainClass>&ndash;&gt;-->
-<!--                    <useCDI>false</useCDI>-->
-<!--&lt;!&ndash;                    <logClasspath>true</logClasspath>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <fileWatcherDirectory>src/main/resources/META-INF/spring</fileWatcherDirectory>&ndash;&gt;-->
-<!--                    <applicationContextUri>META-INF/spring/*.xml;YOUR_FILE_NAME_IN_THE_CLASS_PATH.xml</applicationContextUri>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.camel</groupId>-->
+            <!--                <artifactId>camel-maven-plugin</artifactId>-->
+            <!--                <version>3.4.2</version>-->
+            <!--                <configuration>-->
+            <!--&lt;!&ndash;                    default mainClass&ndash;&gt;-->
+            <!--&lt;!&ndash;                    <mainClass>org.apache.camel.spring.Main</mainClass>&ndash;&gt;-->
+            <!--                    <useCDI>false</useCDI>-->
+            <!--&lt;!&ndash;                    <logClasspath>true</logClasspath>&ndash;&gt;-->
+            <!--&lt;!&ndash;                    <fileWatcherDirectory>src/main/resources/META-INF/spring</fileWatcherDirectory>&ndash;&gt;-->
+            <!--                    <applicationContextUri>META-INF/spring/*.xml;YOUR_FILE_NAME_IN_THE_CLASS_PATH.xml</applicationContextUri>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
 </project>
+

@@ -1,6 +1,9 @@
 package com.kute.camel.spring;
 
 import org.apache.camel.*;
+import org.apache.camel.jsonpath.JsonPath;
+import org.apache.camel.language.bean.Bean;
+import org.apache.camel.language.xpath.XPath;
 import org.apache.camel.spi.Registry;
 
 import java.util.Map;
@@ -23,9 +26,23 @@ public class BeanParameterBindExampleBean {
 
     }
 
-    // 只有一个参数时无需声明  @Body
-    public void m2(@Body String a) {
+    // 若 body是一个xml document
+    public void m2(@XPath("/order/@id") String id,
+            @XPath("/order/status/text()") String text) {
+    }
 
+    // 调用bean的某个method
+    public void m3(@Bean(ref = "myBeanName", method = "myMethod") String beanMethodResult) {
+
+    }
+
+    public void m4(@JsonPath(value = "$.order.result") String result) {
+
+    }
+
+    public void m5(String id, String status, String slash) {
+        // 方法签名参数绑定
+        // from("").bean("myBean", "myMethod(${body}, ${eader.status}, ${header.slash})")
     }
 
     /**
@@ -39,8 +56,9 @@ public class BeanParameterBindExampleBean {
      * @param e             如果有任何异常会绑定到此参数
      */
     public void m3_auto_bind(Exchange exchange, Message message, CamelContext context,
-                             TypeConverter typeConverter, Registry registry, Exception e) {
+            TypeConverter typeConverter, Registry registry, Exception e) {
 
     }
 
 }
+
