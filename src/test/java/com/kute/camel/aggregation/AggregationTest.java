@@ -1,9 +1,7 @@
 package com.kute.camel.aggregation;
 
 import com.kute.camel.AbstractTest;
-import org.apache.camel.CamelContext;
-import org.apache.camel.LoggingLevel;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.builder.AggregationStrategies;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.commons.lang3.RandomUtils;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.util.Map;
 import java.util.stream.IntStream;
 
 /**
@@ -37,6 +36,10 @@ public class AggregationTest extends AbstractTest {
             public void configure() throws Exception {
                 from(directEndpoint)
                         .log(LoggingLevel.INFO, "receive message=${body} with header unique-id=${header.unique-id}")
+                        .process(exchange -> {
+                            // 额外的聚合参数配置
+                            exchange.setProperty("ignoreInvalidCorrelationKeys", true);
+                        })
                         // 同步聚合，保证 aggregationStrategy线程安全
 
 //                        .aggregate(header(identifier), new StringAggregationStrategy().delimiter(",").pick(body()))
@@ -52,9 +55,25 @@ public class AggregationTest extends AbstractTest {
                         // 达到指定大小，开始聚合
                         .completionSize(3)
                         // 超过指定时间未接收消息，开始聚合
-//                        .completionTimeout(1000)
+                        .completionTimeout(1000)
                         // 周期性聚合，会出现同一时间所有的group聚合发送
 //                        .completionInterval(1000)
+                        /**
+                         * 访问 聚合过程中的一些属性，可以从中得知聚合的策略，如 有多个终止条件时哪个条件被触发
+                         * String AGGREGATED_SIZE = "CamelAggregatedSize";
+                         *     String AGGREGATED_TIMEOUT = "CamelAggregatedTimeout";
+                         *     String AGGREGATED_COMPLETED_BY = "CamelAggregatedCompletedBy";
+                         *     String AGGREGATED_CORRELATION_KEY = "CamelAggregatedCorrelationKey";
+                         *     String AGGREGATED_COLLECTION_GUARD = "CamelAggregatedCollectionGuard";
+                         *     String AGGREGATION_STRATEGY = "CamelAggregationStrategy";
+                         *     String AGGREGATION_COMPLETE_CURRENT_GROUP = "CamelAggregationCompleteCurrentGroup";
+                         *     String AGGREGATION_COMPLETE_ALL_GROUPS = "CamelAggregationCompleteAllGroups";
+                         *     String AGGREGATION_COMPLETE_ALL_GROUPS_INCLUSIVE = "CamelAggregationCompleteAllGroupsInclusive";
+                         */
+                        .process(exchange -> {
+                            Map<String, Object> aggregationMap = exchange.getProperties();
+                            log.info("some aggregation properties={}", aggregationMap);
+                        })
                         .to("log:AggregationTest?showAll=true&multiline=true");
             }
         });

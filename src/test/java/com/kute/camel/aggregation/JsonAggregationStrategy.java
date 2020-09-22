@@ -45,11 +45,16 @@ public class JsonAggregationStrategy implements AggregationStrategy {
             result = getJSONObject(oldExchange);
         }
 
-        if (newExchange != null) {
-            String pick = pickExpression.evaluate(newExchange, String.class);
-            if (pick != null) {
-                result.put(pick, pick);
+        if(newExchange.getException() != null) {
+            // some exception occur, then propagate exception
+            if(null != oldExchange) {
+                oldExchange.setException(newExchange.getException());
             }
+        }
+
+        String pick = pickExpression.evaluate(newExchange, String.class);
+        if (pick != null) {
+            result.put(pick, pick);
         }
 
         log.info("Json aggregation temp result={}", result.toJSONString());

@@ -143,9 +143,9 @@ public class DataFromatTest extends AbstractTest {
         superTest(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("file:data/inbox?noop=true")
                         .convertBodyTo(String.class, "utf-8")
-                        .to("");
+                        .to("log:logTest?level=INFO&multiline=true");
             }
         });
     }
