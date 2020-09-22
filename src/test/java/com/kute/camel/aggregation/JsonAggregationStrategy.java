@@ -28,17 +28,19 @@ public class JsonAggregationStrategy implements AggregationStrategy {
      * 消息聚合
      * * 在 aggregate 方法内，要么 返回old 要么返回new，不要新创建 一个 exchange返回
      * * 任何异常情况下，请返回 old
+     * <p>
+     * 下一次的 循环，newExchange将成为oldExchange
      *
      * @param oldExchange
      * @param newExchange
-     *
      * @return
      */
     @Override
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-        JSONObject result; // Aggregate in StringBuffer instead of StringBuilder, to make it thread safe
+        log.info("===========oldExchange={}, newExchange={}", oldExchange == null ? "null" : oldExchange.getProperties(), newExchange.getProperties());
+        JSONObject result;
         if (oldExchange == null) {
-            result = getJSONObject(newExchange); // do not prepend delimiter for first invocation
+            result = getJSONObject(newExchange);
         } else {
             result = getJSONObject(oldExchange);
         }
@@ -102,7 +104,6 @@ public class JsonAggregationStrategy implements AggregationStrategy {
      *
      * @param oldExchange
      * @param newExchange
-     *
      * @return
      */
     @Override

@@ -42,6 +42,9 @@ import java.util.stream.Collectors;
  * showProperties: boolean, exchange properties
  * skipBodyLineSeparator: 忽略日志分隔符，日志显示成一行
  * style：输出样式，Default, Tab, Fixed
+ *
+ * log:logTest?showAll=true&multiline=true
+ * log:logTest?level=INFO&multiline=true&showCaughtException=true
  */
 @Configuration
 public class LogTest extends AbstractTest {

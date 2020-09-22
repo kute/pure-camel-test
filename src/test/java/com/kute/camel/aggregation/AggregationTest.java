@@ -4,6 +4,7 @@ import com.kute.camel.AbstractTest;
 import org.apache.camel.CamelContext;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.builder.AggregationStrategies;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ public class AggregationTest extends AbstractTest {
 
     @Autowired
     private CamelContext camelContext;
+    @Autowired
+    private JsonAggregationStrategyBean jsonAggregationStrategyBean;
 
     @Test
     public void test() throws Exception {
@@ -35,8 +38,17 @@ public class AggregationTest extends AbstractTest {
                 from(directEndpoint)
                         .log(LoggingLevel.INFO, "receive message=${body} with header unique-id=${header.unique-id}")
                         // 同步聚合，保证 aggregationStrategy线程安全
+
 //                        .aggregate(header(identifier), new StringAggregationStrategy().delimiter(",").pick(body()))
-                        .aggregate(header(identifier), new JsonAggregationStrategy().pickBody(body()))
+//                        .aggregate(header(identifier), AggregationStrategies.string(","))
+
+                        // 实现自定义的json聚合策略
+//                        .aggregate(header(identifier), new JsonAggregationStrategy().pickBody(body()))
+                        // 不使用AggregationStrategy接口，使用普通的bean实现 json聚合策略：注意这里允许第一次的消息为空，即 第一次消息到来时，old是空的
+//                        .aggregate(header(identifier), AggregationStrategies.beanAllowNull(jsonAggregationStrategyBean, "jsonAppendAllowNull"))
+                        // 这里会忽略到第一次空的消息，即 聚合时 old永远不为空
+                        .aggregate(header(identifier), AggregationStrategies.bean(jsonAggregationStrategyBean, "jsonAppendNotAllNull"))
+//                        .aggregationRepository(new RedisAggregationRepository())
                         // 达到指定大小，开始聚合
                         .completionSize(3)
                         // 超过指定时间未接收消息，开始聚合

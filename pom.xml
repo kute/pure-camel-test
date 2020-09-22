@@ -152,6 +152,8 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <!--
+            mvn camel:validate
+
             camel 插件，执行：mvn compile camel:run -Dmaven.test.skip=true
             https://camel.apache.org/manual/latest/camel-maven-plugin.html
             https://camel.apache.org/manual/latest/camel-run-maven-goal.html

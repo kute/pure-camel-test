@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.util.function.BiConsumer;
-
 /**
  * created by kute at 2020/9/6 4:27 下午
  * <p>
@@ -46,7 +44,6 @@ public class BeanTest extends AbstractTest {
 //                        .bean("com.kute.camel.spring.HelloBean", "hello")
 //                        .bean(HelloBean.class, "hello")
                         .to("stream:out");
-
                 HelloBean helloBean2 = context.getRegistry().lookupByNameAndType("helloBean", HelloBean.class);
 
                 Preconditions.checkArgument(helloBean.hashCode() == helloBean2.hashCode());

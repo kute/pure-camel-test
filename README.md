@@ -2,6 +2,7 @@
 
 https://github.com/apache/camel
 https://camel.apache.org/
+https://plugins.jetbrains.com/plugin/9371-apache-camel-idea-plugin
 
 
 
