@@ -2,6 +2,8 @@
 
 https://github.com/apache/camel
 https://camel.apache.org/
+https://github.com/apache/camel-examples/
+https://www.javadoc.io/doc/org.apache.camel/camel-api/latest/index.html
 https://plugins.jetbrains.com/plugin/9371-apache-camel-idea-plugin
 
 

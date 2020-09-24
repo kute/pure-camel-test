@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.kute.camel.AbstractTest;
 import com.kute.camel.model.Customer;
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AggregationStrategies;
 import org.apache.camel.builder.RouteBuilder;
@@ -101,6 +99,17 @@ public class SplitTest extends AbstractTest {
     public void testStream() throws Exception {
 
         //TODO split with stream
+        superTest(new RouteBuilder() {
+            @Override
+            public void configure() throws Exception {
+                from("file:data/inbox")
+                        .log("begin deal with file-name=${header.CamelFileName}")
+                        .split(body().tokenize("\n"))
+//                        .streaming()
+//                        .end()
+                        .to("log:logTest?level=INFO&showAll=true&multiline=true");
+            }
+        });
     }
 
 }

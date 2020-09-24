@@ -3,7 +3,9 @@ package com.kute.camel.log;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.kute.camel.AbstractTest;
+import com.kute.camel.util.CommonUtil;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.camel.component.log.LogComponent;
 import org.apache.camel.spi.ExchangeFormatter;
 import org.junit.Test;
@@ -42,7 +44,7 @@ import java.util.stream.Collectors;
  * showProperties: boolean, exchange properties
  * skipBodyLineSeparator: 忽略日志分隔符，日志显示成一行
  * style：输出样式，Default, Tab, Fixed
- *
+ * <p>
  * log:logTest?showAll=true&multiline=true
  * log:logTest?level=INFO&multiline=true&showCaughtException=true
  */
@@ -79,9 +81,7 @@ public class LogTest extends AbstractTest {
                 "showHeaders", true
         ));
 
-        String option = optionMap.entrySet().stream()
-                .map(entry -> entry.getKey() + "=" + entry.getValue().toString())
-                .collect(Collectors.joining("&"));
+        String option = CommonUtil.toUriParam(optionMap);
 
         superTest(new RouteBuilder() {
             @Override
@@ -92,5 +92,6 @@ public class LogTest extends AbstractTest {
         });
 
     }
+
 
 }
