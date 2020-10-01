@@ -1,23 +1,30 @@
-package com.kute.camel.routing_slip;
+package com.kute.camel.loadbalance;
 
 import com.kute.camel.AbstractTest;
+import com.kute.camel.routing_slip.ComputeSlipBean;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.processor.loadbalancer.RoundRobinLoadBalancer;
+import org.apache.camel.processor.loadbalancer.StickyLoadBalancer;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.io.IOException;
+import java.util.stream.IntStream;
+
 /**
  * created by bailong001 on 2020/09/28 19:27
  * <p>
- * 根据消息动态路由到若干个节点
+ * 负载均衡策略类型：org.apache.camel.processor.loadbalancer.LoadBalancer 的实现类
  */
 @SpringBootTest
 @ComponentScan(value = "com.kute.camel")
-public class SlipTest extends AbstractTest {
+public class LoadBalanceTest extends AbstractTest {
 
     @Autowired
     private CamelContext camelContext;
@@ -28,14 +35,7 @@ public class SlipTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
                 from("direct:A")
-                        .log("receive A meesage=${body}")
-                        .process(exchange -> {
-//                            Exchange.SLIP_ENDPOINT;
-//                            Exchange.SLIP_PRODUCER;
-//                            headers={sliplist=direct:A,direct:C}, properties={CamelSlipEndpoint=direct://A, CamelToEndpoint=direct://A, CamelSlipProducer=Producer[direct://A]}
-                            log.info("receive A with headers={}, properties={}",
-                                    exchange.getMessage().getHeaders(), exchange.getProperties());
-                        });
+                        .log("receive A meesage=${body}, header=${header.level}");
             }
         });
 
@@ -43,7 +43,7 @@ public class SlipTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
                 from("direct:B")
-                        .log("receive B meesage=${body}");
+                        .log("receive B meesage=${body}, header=${header.level}");
             }
         });
 
@@ -51,7 +51,7 @@ public class SlipTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
                 from("direct:C")
-                        .log("receive C meesage=${body}");
+                        .log("receive C meesage=${body}, header=${header.level}");
             }
         });
     }
@@ -64,51 +64,68 @@ public class SlipTest extends AbstractTest {
             public void configure() throws Exception {
                 from("direct:start")
                         .log("receive start meesage=${body}")
-//                        默认逗号分隔
-//                        .routingSlip(header("sliplist"))
-                        .routingSlip(header("sliplist"), ",");
+
+//                        .loadBalance()
+//                            .roundRobin()
+//                                .to("direct:B").to("direct:C").to("direct:A")
+
+                        .loadBalance(new RoundRobinLoadBalancer())
+                        .to("direct:B").to("direct:C").to("direct:A")
+
+                        .end();
             }
         });
 
         ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "sliplist", "direct:A,direct:C");
+        IntStream.rangeClosed(1, 7).forEach(i -> {
+            template.requestBody("direct:start", "hello world");
+        });
         camelContext.stop();
     }
 
     @Test
-    public void testWithBean() throws Exception {
+    public void testSticky() throws Exception {
+
+        // hash load balance
 
         camelContext.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
                         .log("receive start meesage=${body}")
-                        // 使用bean计算 routingslip
-                        .routingSlip(method(new ComputeSlipBean(), "compute"));
+
+                        .loadBalance()
+                        .sticky(header("level"))
+                        .to("direct:B").to("direct:C").to("direct:A")
+
+                        .end();
             }
         });
 
         ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
+        IntStream.rangeClosed(1, 7).forEach(i -> {
+            template.requestBodyAndHeader("direct:start", "hello world", "level", RandomUtils.nextInt(1, 4));
+        });
         camelContext.stop();
     }
 
     @Test
-    public void testWithBeanAnnotation() throws Exception {
+    public void testFailover() throws Exception {
 
         camelContext.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
                 from("direct:start")
                         .log("receive start meesage=${body}")
-                        //使用注解来声明 routingslip bean method，就直接使用bean(。。。)
-                        .bean(new ComputeSlipBean(), "annotationMethod");
+
+                        .loadBalance()
+                        .failover() // B出现任何异常，将会路由到C，否则一直只会路由到B
+                        .failover(IOException.class, ClassCastException.class)// 指定异常
+                        .to("direct:B").to("direct:C")
+
+                        .end();
             }
         });
-
-        ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
-//        template.requestBodyAndHeader("bean:com.kute.camel.slip.ComputeSlipBean?method=annotationMethod", "hello world", "count", 5);
-        camelContext.stop();
     }
+
 }

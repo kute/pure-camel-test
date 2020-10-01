@@ -1,4 +1,4 @@
-package com.kute.camel.routing_slip;
+package com.kute.camel.dynamic_route;
 
 import com.kute.camel.AbstractTest;
 import org.apache.camel.CamelContext;
@@ -11,16 +11,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * created by bailong001 on 2020/09/28 19:27
- * <p>
- * 根据消息动态路由到若干个节点
+ * created by bailong001 on 2020/09/30 10:31
  */
 @SpringBootTest
 @ComponentScan(value = "com.kute.camel")
-public class SlipTest extends AbstractTest {
+public class RouteTest extends AbstractTest {
 
     @Autowired
     private CamelContext camelContext;
+    @Autowired
+    private DynamicComputeBean dynamicComputeBean;
 
     @BeforeEach
     public void before() throws Exception {
@@ -43,7 +43,14 @@ public class SlipTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
                 from("direct:B")
-                        .log("receive B meesage=${body}");
+                        .log("receive B meesage=${body}")
+                        .process(exchange -> {
+//                            Exchange.SLIP_ENDPOINT;
+//                            Exchange.SLIP_PRODUCER;
+//                            headers={sliplist=direct:A,direct:C}, properties={CamelSlipEndpoint=direct://A, CamelToEndpoint=direct://A, CamelSlipProducer=Producer[direct://A]}
+                            log.info("receive B with headers={}, properties={}",
+                                    exchange.getMessage().getHeaders(), exchange.getProperties());
+                        });
             }
         });
 
@@ -51,7 +58,14 @@ public class SlipTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
                 from("direct:C")
-                        .log("receive C meesage=${body}");
+                        .log("receive C meesage=${body}")
+                        .process(exchange -> {
+//                            Exchange.SLIP_ENDPOINT;
+//                            Exchange.SLIP_PRODUCER;
+//                            headers={sliplist=direct:A,direct:C}, properties={CamelSlipEndpoint=direct://A, CamelToEndpoint=direct://A, CamelSlipProducer=Producer[direct://A]}
+                            log.info("receive C with headers={}, properties={}",
+                                    exchange.getMessage().getHeaders(), exchange.getProperties());
+                        });
             }
         });
     }
@@ -62,53 +76,34 @@ public class SlipTest extends AbstractTest {
         camelContext.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
+
                 from("direct:start")
                         .log("receive start meesage=${body}")
-//                        默认逗号分隔
-//                        .routingSlip(header("sliplist"))
-                        .routingSlip(header("sliplist"), ",");
+                        .dynamicRouter(method(dynamicComputeBean, "compute"));
             }
         });
 
         ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "sliplist", "direct:A,direct:C");
+        template.requestBody("direct:start", "hello world");
         camelContext.stop();
     }
 
     @Test
-    public void testWithBean() throws Exception {
+    public void testWithAnnotation() throws Exception {
 
         camelContext.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
+
                 from("direct:start")
                         .log("receive start meesage=${body}")
-                        // 使用bean计算 routingslip
-                        .routingSlip(method(new ComputeSlipBean(), "compute"));
+                        .bean(dynamicComputeBean, "computeAnnotation");
             }
         });
 
         ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
+        template.requestBody("direct:start", "hello world");
         camelContext.stop();
     }
 
-    @Test
-    public void testWithBeanAnnotation() throws Exception {
-
-        camelContext.addRoutes(new RouteBuilder() {
-            @Override
-            public void configure() throws Exception {
-                from("direct:start")
-                        .log("receive start meesage=${body}")
-                        //使用注解来声明 routingslip bean method，就直接使用bean(。。。)
-                        .bean(new ComputeSlipBean(), "annotationMethod");
-            }
-        });
-
-        ProducerTemplate template = camelContext.createProducerTemplate();
-        template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
-//        template.requestBodyAndHeader("bean:com.kute.camel.slip.ComputeSlipBean?method=annotationMethod", "hello world", "count", 5);
-        camelContext.stop();
-    }
 }
