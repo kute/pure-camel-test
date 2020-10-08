@@ -19,6 +19,11 @@ camel:
     spring-redis:
       bridge-error-handler: true
       enabled: true
-#  camel springboot config
+  #  camel springboot config
   springboot:
     name: camel-context-name
+    # https://camel.apache.org/manual/latest/stream-caching.html
+    stream-caching-enabled: true
+    stream-caching-buffer-size: 65536
+    stream-caching-statistics-enabled: true
+    stream-caching-spool-directory: /temp

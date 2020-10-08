@@ -16,6 +16,7 @@ https://plugins.jetbrains.com/plugin/9371-apache-camel-idea-plugin
 4、endpoints
 4.1、file
 file:data/inbox?noop=true
+file:data/inbox?fileName=${date:now:yyyyMMdd-hh:mm:ss}.txt
 可选参数见：org.apache.camel.component.file.FileEndpointConfigurer
 4.2、jms
 4.3、bean
