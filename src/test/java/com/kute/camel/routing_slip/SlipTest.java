@@ -21,6 +21,8 @@ public class SlipTest extends AbstractTest {
 
     @Autowired
     private CamelContext camelContext;
+    @Autowired
+    private ProducerTemplate template;
 
     @BeforeEach
     public void before() throws Exception {
@@ -70,7 +72,6 @@ public class SlipTest extends AbstractTest {
             }
         });
 
-        ProducerTemplate template = camelContext.createProducerTemplate();
         template.requestBodyAndHeader("direct:start", "hello world", "sliplist", "direct:A,direct:C");
         camelContext.stop();
     }
@@ -88,7 +89,6 @@ public class SlipTest extends AbstractTest {
             }
         });
 
-        ProducerTemplate template = camelContext.createProducerTemplate();
         template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
         camelContext.stop();
     }
@@ -106,7 +106,6 @@ public class SlipTest extends AbstractTest {
             }
         });
 
-        ProducerTemplate template = camelContext.createProducerTemplate();
         template.requestBodyAndHeader("direct:start", "hello world", "count", 5);
 //        template.requestBodyAndHeader("bean:com.kute.camel.slip.ComputeSlipBean?method=annotationMethod", "hello world", "count", 5);
         camelContext.stop();

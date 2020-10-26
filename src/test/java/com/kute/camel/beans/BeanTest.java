@@ -1,11 +1,8 @@
-package com.kute.camel.spring;
+package com.kute.camel.beans;
 
 import com.google.common.base.Preconditions;
 import com.kute.camel.AbstractTest;
-import org.apache.camel.BeanScope;
-import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
-import org.apache.camel.ProducerTemplate;
+import org.apache.camel.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spi.Synchronization;
 import org.junit.jupiter.api.Test;
@@ -29,6 +26,13 @@ public class BeanTest extends AbstractTest {
      */
     @Autowired
     private CamelContext context;
+
+    @Autowired
+    private ProducerTemplate producerTemplate;
+    @Autowired
+    private ConsumerTemplate consumerTemplate;
+    @Autowired
+    private TypeConverter typeConverter;
 
     @Autowired
     private HelloBean helloBean;
@@ -67,22 +71,20 @@ public class BeanTest extends AbstractTest {
             }
         });
 
-        ProducerTemplate template = context.createProducerTemplate();
-
         // requestBody: inout message
-//        Object reply = template.requestBody(endpoint, "new message");
+//        Object reply = producerTemplate.requestBody(endpoint, "new message");
 //        String reply_string = template.requestBody(endpoint, "new message", String.class);
 //        String reply_string_2 = template.requestBodyAndHeader(endpoint, "new message", "my-header", "header-value", String.class);
 //        System.out.println(reply);
 //        System.out.println(reply_string);
 //        System.out.println(reply_string_2);
 
-//        template.asyncRequestBody(endpoint, "new message")
+//        producerTemplate.asyncRequestBody(endpoint, "new message")
 //                .whenComplete((o, throwable) -> {
 //                    System.out.println("complete for " + o);
 //                });
 //
-//        template.asyncCallbackRequestBody(endpoint, "new message", new Synchronization() {
+//        producerTemplate.asyncCallbackRequestBody(endpoint, "new message", new Synchronization() {
 //            @Override
 //            public void onComplete(Exchange exchange) {
 //                System.out.println("asyncCallbackRequestBody onComplete for: " + exchange.getMessage().getBody());
@@ -95,7 +97,7 @@ public class BeanTest extends AbstractTest {
 //        });
 
         // send: inonly
-        template.asyncCallbackSendBody(endpoint, "new message", new Synchronization() {
+        producerTemplate.asyncCallbackSendBody(endpoint, "new message", new Synchronization() {
             @Override
             public void onComplete(Exchange exchange) {
                 System.out.println("asyncCallbackSendBody onComplete for: " + exchange.getMessage().getBody());

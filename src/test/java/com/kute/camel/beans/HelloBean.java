@@ -1,4 +1,4 @@
-package com.kute.camel.spring;
+package com.kute.camel.beans;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Handler;

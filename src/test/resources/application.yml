@@ -19,7 +19,7 @@ camel:
     spring-redis:
       bridge-error-handler: true
       enabled: true
-  #  camel springboot config
+  #  camel springboot config：https://camel.apache.org/camel-spring-boot/latest/spring-boot.html
   springboot:
     name: camel-context-name
     # https://camel.apache.org/manual/latest/stream-caching.html
@@ -27,3 +27,21 @@ camel:
     stream-caching-buffer-size: 65536
     stream-caching-statistics-enabled: true
     stream-caching-spool-directory: /temp
+
+    # template endpoint cache size
+    producer-template-cache-size: 1000
+    consumer-template-cache-size: 1000
+
+    # 当项目中不包含 spring-boot-starter-web时，将此配置设置为true以保持spring一直运行直到jvm stop
+#    main-run-controller: true
+
+
+t1route:
+  from: direct:start2
+  to: stream:out
+
+# to configure logging levels
+#logging.level.org.springframework = INFO
+#logging.level.org.apache.camel.spring.boot = INFO
+#logging.level.org.apache.camel.impl = DEBUG
+#logging.level.sample.camel = DEBUG

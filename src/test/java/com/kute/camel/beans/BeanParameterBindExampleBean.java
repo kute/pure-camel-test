@@ -1,4 +1,4 @@
-package com.kute.camel.spring;
+package com.kute.camel.beans;
 
 import org.apache.camel.*;
 import org.apache.camel.jsonpath.JsonPath;
@@ -42,7 +42,7 @@ public class BeanParameterBindExampleBean {
 
     public void m5(String id, String status, String slash) {
         // 方法签名参数绑定
-        // from("").bean("myBean", "myMethod(${body}, ${eader.status}, ${header.slash})")
+        // from("direct:start").bean("myBean", "myMethod(${body}, ${eader.status}, ${header.slash})")
     }
 
     /**

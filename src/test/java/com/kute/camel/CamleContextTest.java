@@ -2,7 +2,7 @@ package com.kute.camel;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.kute.camel.spring.HelloBean;
+import com.kute.camel.beans.HelloBean;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.SimpleRegistry;

@@ -20,14 +20,14 @@ public class DataFromatTest extends AbstractTest {
         superTest(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("direct:start")
                         .process(new Processor() {
                             @Override
                             public void process(Exchange exchange) throws Exception {
 
                             }
                         })
-                        .to("");
+                        .to("stream:out");
             }
         });
     }
@@ -44,10 +44,10 @@ public class DataFromatTest extends AbstractTest {
         superTest(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("direct:start")
                         .bean(new MyBean())
                         .bean(new MyBean(), "map")
-                        .to("");
+                        .to("stream:out");
             }
         });
     }
@@ -58,7 +58,7 @@ public class DataFromatTest extends AbstractTest {
         superTest(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("direct:start")
                         .transform(body().regexReplaceAll("", ""))
                         .transform(new Expression() {
                             @Override
@@ -66,7 +66,7 @@ public class DataFromatTest extends AbstractTest {
                                 return (T) exchange.getIn().getBody(String.class).replaceAll("", "");
                             }
                         })
-                        .to("");
+                        .to("stream:out");
             }
         });
     }
@@ -118,18 +118,18 @@ public class DataFromatTest extends AbstractTest {
         superTest(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("direct:start")
                         .unmarshal()
                         .csv().split(body())
-                        .to("");
+                        .to("stream:out");
 
-                from("")
-                        .marshal().json(JsonLibrary.Fastjson)
-                        .to("");
-
-                from("")
-                        .marshal(csvDataFormat)
-                        .to("");
+//                from("direct:start")
+//                        .marshal().json(JsonLibrary.Fastjson)
+//                        .to("stream:out");
+//
+//                from("direct:start")
+//                        .marshal(csvDataFormat)
+//                        .to("stream:out");
 
             }
         });

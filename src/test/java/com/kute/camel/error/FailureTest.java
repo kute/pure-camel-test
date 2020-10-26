@@ -92,7 +92,7 @@ public class FailureTest extends AbstractTest {
 
                 from("direct:start")
 //                        .onException(IOException.class)
-//                        .to("")
+//                        .to("stream:out")
 //                        .end()
                         .process(exchange -> {
                             Integer counter = exchange.getMessage().getHeader(Exchange.REDELIVERY_COUNTER, Integer.class);
@@ -124,7 +124,7 @@ public class FailureTest extends AbstractTest {
         camelContext.addRoutes(new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-                from("")
+                from("direct:start")
                         .bean("")
                         .doTry()
                         .bean("")
@@ -136,7 +136,7 @@ public class FailureTest extends AbstractTest {
                         .process(exchange -> {
 
                         })
-                        .to("");
+                        .to("stream:out");
             }
         });
 

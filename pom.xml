@@ -18,6 +18,36 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-spring-boot-dependencies -->
+            <!--        包含 camel 在spring boot中的依赖-->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-dependencies</artifactId>
+                <version>3.5.0</version>
+                <type>pom</type>
+                <scope>provided</scope>
+            </dependency>
+            <!--        包含 camel 在 spring boot 环境中的starter依赖-->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-bom</artifactId>
+                <version>3.5.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Add Camel BOM -->
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-bom</artifactId>
+                <version>3.5.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -59,44 +89,33 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-spring-boot-dependencies -->
-        <dependency>
-            <groupId>org.apache.camel.springboot</groupId>
-            <artifactId>camel-spring-boot-dependencies</artifactId>
-            <version>3.5.0</version>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Add Camel BOM -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-bom</artifactId>
-            <version>3.5.0</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
 
+        <!-- starter系列，版本声明在 camel-spring-boot-bom -->
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-spring-boot-starter</artifactId>
-            <version>3.5.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-spring-redis-starter</artifactId>
-            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-geocoder-starter</artifactId>
-            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-hystrix-starter</artifactId>
-            <version>3.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-http-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-jackson-starter</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
@@ -151,6 +170,11 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-test-spring-junit5</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
