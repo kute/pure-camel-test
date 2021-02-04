@@ -74,7 +74,7 @@ public class KafkaTest extends AbstractTest {
     @Autowired
     private CamelContext camelContext;
 
-    private static final String BROKER_LIST = "kafka01-test.lianjia.com:9092,kafka02-test.lianjia.com:9092,kafka03-test.lianjia.com:9092";
+    private static final String BROKER_LIST = "";
 
     private static final String TOPIC = "sinan-satisfaction-test";
 
