@@ -76,7 +76,7 @@ public class KafkaTest extends AbstractTest {
 
     private static final String BROKER_LIST = "";
 
-    private static final String TOPIC = "sinan-satisfaction-test";
+    private static final String TOPIC = "test-satisfaction-test";
 
     public static String defaultOptions(String brokers, String partitionKey, String messageKey) {
         Map<String, String> optionMap = new HashMap<>();
@@ -110,7 +110,7 @@ public class KafkaTest extends AbstractTest {
 
                 from("stream:file?fileName=data/inbox/mutil-line-message.line")
                         .split(body().tokenize("\n"))
-                        .to("kafka:sinan-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null));
+                        .to("kafka:test-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null));
             }
         });
 
@@ -123,7 +123,7 @@ public class KafkaTest extends AbstractTest {
             @Override
             public void configure() throws Exception {
 
-                from("kafka:sinan-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null))
+                from("kafka:test-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null))
                         .log("Message received from Kafka : ${body}")
                         .log("on the topic ${headers[kafka.TOPIC]}")
                         .process(exchange -> {
@@ -143,7 +143,7 @@ public class KafkaTest extends AbstractTest {
                 from("direct:start")
                         .setBody(constant("Message from Camel"))          // Message to send
                         .setHeader(KafkaConstants.KEY, constant("Camel"))
-                        .to("kafka:sinan-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null));
+                        .to("kafka:test-satisfaction-test?" + defaultOptions(BROKER_LIST, "0", null));
             }
         });
     }

@@ -149,6 +149,12 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-main</artifactId>
+        </dependency>
+
+<!--        test-->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-test</artifactId>
             <version>3.5.0</version>
             <scope>test</scope>
